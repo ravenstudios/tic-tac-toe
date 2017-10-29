@@ -8,9 +8,9 @@ let positions = ["xo0", "xo1", "xo2", "xo3", "xo4", "xo5", "xo6", "xo7", "xo8"];
 let board = ["", "", "", "", "", "", "", "", ""];
 let singlePlayer; //boolean
 let canPlay = false;
-let fadeTimer = 1;
+let fadeTimer = 1000;
 let cpuFirst = false;
-
+let difficulty;
 let winConditions = [
   [0,1,2],
   [3,4,5],
@@ -51,14 +51,14 @@ $(()=>{
 
   $("#reset").click(()=>{
     reset();
-    $(".chalkBoard").fadeIn(fadeTimer);
+
   });
 
   $("#onePlayer").click(()=>{
 
     singlePlayer = true;
     $(".playerChoice").fadeOut(fadeTimer, ()=>{
-      $(".xoSelect").fadeIn(fadeTimer);
+      $(".difficultyChoice").fadeIn(fadeTimer);
     });
 
   });
@@ -69,6 +69,29 @@ $(()=>{
       $(".xoSelect").fadeIn(fadeTimer);
     });
   });
+  // difficultyChoice
+
+    $("#easy").click(()=>{
+      difficulty = 3;
+      $(".difficultyChoice").fadeOut(fadeTimer, ()=>{
+        $(".xoSelect").fadeIn(fadeTimer);
+      });
+    });
+
+    $("#hard").click(()=>{
+      difficulty = 9;
+      $(".difficultyChoice").fadeOut(fadeTimer, ()=>{
+        $(".xoSelect").fadeIn(fadeTimer);
+      });
+    });
+
+    $("#impossible").click(()=>{
+      difficulty = 10;
+      $(".difficultyChoice").fadeOut(fadeTimer, ()=>{
+        $(".xoSelect").fadeIn(fadeTimer);
+      });
+    });
+
 
   $("#selectXButton").click(()=>{
     player1 = "X"
@@ -221,16 +244,9 @@ function cpuTurn(){
   canPlay = false;
   currentPlayer = player2;
   // let arr = [];
-  let rand = Math.floor(Math.random() * (2000 - 1000)) + 1000;//sets random time for the cpu to play giving it a feel of human
+  let randTimeout = Math.floor(Math.random() * (2000 - 1000)) + 1000;//sets random time for the cpu to play giving it a feel of human
   setTimeout(()=>{
 
-    // board.forEach((i, index)=>{//makes an arry of peices to choose from
-    //   if(i === ""){
-    //     arr.push(index);
-    //   }
-    // });
-    //
-    // rand = Math.floor(Math.random() * arr.length);//picks a random spot
 
     let spot = miniMax(board, 0, player2);
     board[spot] = player2//places on board
@@ -254,7 +270,7 @@ function cpuTurn(){
       canPlay = true;
     }
 
-  }, 0);
+  }, randTimeout);
 
 
 
@@ -267,7 +283,7 @@ function cpuTurn(){
 
 function miniMax(inBoard, depth, player){
 
-  if(depth < 7){
+  if(depth < difficulty){
     if (checkDraw(inBoard)) {
       return 0;
     }
