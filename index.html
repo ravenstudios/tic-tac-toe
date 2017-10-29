@@ -13,19 +13,19 @@
         <div class="board">
           <table>
             <tr>
-              <td><p class="xo" id="xo0"></p></td>
-              <td><p class="xo" id="xo1"></p></td>
-              <td><p class="xo" id="xo2"></p></td>
+              <td><p class="xo no-highlight" id="xo0"></p></td>
+              <td><p class="xo no-highlight" id="xo1"></p></td>
+              <td><p class="xo no-highlight" id="xo2"></p></td>
             </tr>
             <tr>
-              <td><p class="xo" id="xo3"></p></td>
-              <td><p class="xo" id="xo4"></p></td>
-              <td><p class="xo" id="xo5"></p></td>
+              <td><p class="xo no-highlight" id="xo3"></p></td>
+              <td><p class="xo no-highlight" id="xo4"></p></td>
+              <td><p class="xo no-highlight" id="xo5"></p></td>
             </tr>
             <tr>
-              <td><p class="xo" id="xo6"></p></td>
-              <td><p class="xo" id="xo7"></p></td>
-              <td><p class="xo" id="xo8"></p></td>
+              <td><p class="xo no-highlight" id="xo6"></p></td>
+              <td><p class="xo no-highlight" id="xo7"></p></td>
+              <td><p class="xo no-highlight" id="xo8"></p></td>
             </tr>
           </table>
         </div>
@@ -33,15 +33,22 @@
       </div>
 
       <div class="playerChoice settings">
-        <h1>How many players?</h1>
-        <button class="" type="button" id="onePlayer">1</button>
-        <button class="" type="button" id="twoPlayer">2</button>
+        <h1 class="no-highlight" >How many players?</h1>
+        <button class="no-highlight" type="button" id="onePlayer">1</button>
+        <button class="no-highlight" type="button" id="twoPlayer">2</button>
+      </div>
+
+      <div class="difficultyChoice settings">
+        <h1 class="no-highlight" >Set Difficulty</h1>
+        <button class="no-highlight" type="button" id="easy">Easy</button>
+        <button class="no-highlight" type="button" id="hard">Hard</button>
+        <button class="no-highlight" type="button" id="impossible">Impossible</button>
       </div>
 
       <div class="xoSelect settings">
-        <h1>X or O?</h1>
-        <button class="" type="button"id="selectXButton">X</button>
-        <button class="" type="button"id="selectOButton">O</button>
+        <h1 class="no-highlight"  >X or O?</h1>
+        <button class="no-highlight" type="button"id="selectXButton">X</button>
+        <button class="no-highlight" type="button"id="selectOButton">O</button>
       </div>
 
 
@@ -49,8 +56,9 @@
 
 
     </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="js.js" type="text/javascript"></script>
-    
+
   </body>
 </html>
