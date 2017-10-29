@@ -1,14 +1,15 @@
 
-
+let player1Turn;
+let player2Turn;
 let player1;
 let player2;
-let currentPlayer;
+let currentPlayer = "X";
 let positions = ["xo0", "xo1", "xo2", "xo3", "xo4", "xo5", "xo6", "xo7", "xo8"];
 let board = ["", "", "", "", "", "", "", "", ""];
 let singlePlayer; //boolean
 let canPlay = false;
-let fadeTimer = 1000;
-let difficulty;//affects minimax depth 3-easy 9-med/hard 10-impossible
+let fadeTimer = 1;
+let cpuFirst = false;
 
 let winConditions = [
   [0,1,2],
@@ -20,25 +21,44 @@ let winConditions = [
   [0,4,8],
   [2,4,6]//diag
 ];
+let test = [
+  {score: -123, index: 0},
+  {score: 123423, index: 0},
+  {score: 1223, index: 0},
+  {score: 1423, index: 0},
+  {score: 156723, index: 0},
+  {score: 13223, index: 0},
+  {score: 23423, index: 0},
+  {score: 122343, index: 0},
+  {score: 1243, index: 0},
+  {score: 1223, index: 0},
+  {score: 1263, index: 0},
+  {score: 12003, index: 0},
+
+]
 
 $(()=>{
+  $("#test").click(()=>{
+    reset();
+    console.log(minValue(test));
+  });
 
   $(".xo").click((e)=>{
     placePiece(e.target.id);
   });
 
-  
+
 
   $("#reset").click(()=>{
     reset();
-
+    $(".chalkBoard").fadeIn(fadeTimer);
   });
 
   $("#onePlayer").click(()=>{
 
     singlePlayer = true;
     $(".playerChoice").fadeOut(fadeTimer, ()=>{
-      $(".difficultyChoice").fadeIn(fadeTimer);
+      $(".xoSelect").fadeIn(fadeTimer);
     });
 
   });
@@ -49,30 +69,6 @@ $(()=>{
       $(".xoSelect").fadeIn(fadeTimer);
     });
   });
-// difficultyChoice
-
-  $("#easy").click(()=>{
-    difficulty = 3;
-    $(".difficultyChoice").fadeOut(fadeTimer, ()=>{
-      $(".xoSelect").fadeIn(fadeTimer);
-    });
-  });
-
-  $("#hard").click(()=>{
-    difficulty = 9;
-    $(".difficultyChoice").fadeOut(fadeTimer, ()=>{
-      $(".xoSelect").fadeIn(fadeTimer);
-    });
-  });
-
-  $("#impossible").click(()=>{
-    difficulty = 10;
-    $(".difficultyChoice").fadeOut(fadeTimer, ()=>{
-      $(".xoSelect").fadeIn(fadeTimer);
-    });
-  });
-
-
 
   $("#selectXButton").click(()=>{
     player1 = "X"
@@ -86,7 +82,9 @@ $(()=>{
     startGame();
   });
 
-
+  // $("#test").click(()=>{
+  //   cpuLogic();
+  // });
 
 
 });
@@ -105,7 +103,7 @@ function startGame(){
       message("Player 1 is " + player1, ()=>{
         message("\"" + currentPlayer + "\" goes first", ()=>{
           if(player2 === currentPlayer && singlePlayer){
-
+            cpuFirst = true;
             cpuTurn();
           }
           else{
@@ -203,6 +201,9 @@ function checkBoard(player, board){
     if(board[temp[0]] === player &&
        board[temp[1]] === player &&
        board[temp[2]] === player){
+
+
+
       return true;
     }
   }
@@ -210,7 +211,9 @@ function checkBoard(player, board){
 }
 
 function checkDraw(board){
-
+  // if(board.indexOf("") === -1){
+  //   return true;
+  // }
   return board.indexOf("") === -1
 }
 
@@ -218,8 +221,17 @@ function cpuTurn(){
   canPlay = false;
   currentPlayer = player2;
   // let arr = [];
-  let randTimeout = Math.floor(Math.random() * (2000 - 1000)) + 1000;//sets random time for the cpu to play giving it a feel of human
+  let rand = Math.floor(Math.random() * (2000 - 1000)) + 1000;//sets random time for the cpu to play giving it a feel of human
   setTimeout(()=>{
+
+    // board.forEach((i, index)=>{//makes an arry of peices to choose from
+    //   if(i === ""){
+    //     arr.push(index);
+    //   }
+    // });
+    //
+    // rand = Math.floor(Math.random() * arr.length);//picks a random spot
+
     let spot = miniMax(board, 0, player2);
     board[spot] = player2//places on board
     $("#" + positions[spot]).html(player2);//displays choice
@@ -242,11 +254,11 @@ function cpuTurn(){
       canPlay = true;
     }
 
-  }, randTimeout);
+  }, 0);
+
+
+
 }
-
-
-
 
 
 
@@ -255,66 +267,80 @@ function cpuTurn(){
 
 function miniMax(inBoard, depth, player){
 
-  if(depth < difficulty){
-    if(inBoard.indexOf("") !== -1){//game still going
-      let boardCopy = inBoard.slice();//make a copy of the passed in array
+  if(depth < 7){
+    if (checkDraw(inBoard)) {
+      return 0;
+    }
+
+    else if (checkBoard(player, inBoard)) {
+
+      if(player === player2){
+        return 10;
+      }
+
+      if(player === player1){
+        return -10;
+      }
+    }
+
+    else if(inBoard.indexOf("") !== -1){//game still going
+
       let scores = [];
 
-      boardCopy.forEach((item, index)=>{//loop through all empty spots
+      inBoard.forEach((item, index)=>{
 
-        if(item === ""){//if spot is available
+        if(item === ""){
+          // console.log("item: " + item + " index: " + index);
+          const boardCopy = inBoard.slice();
+          boardCopy[index] = player;
 
-          boardCopy[index] = player;//set token in copied array
-          let score = miniMax(boardCopy, depth + 1, (player === player1) ? player2 : player1);//call minimax again with new array and flipped player
+          let nextPlayer = (player === player1) ? player2 : player1;
 
+          let score = miniMax(boardCopy, depth + 1, nextPlayer);
+          // console.log(score);
           scores.push({score: score, index: index});
-
+          //console.log(scores);
         }
       });
 
-      if(player === player2){//checks max
+      if(player === player2){
         let max = maxValue(scores);
-        if(depth === 0){//if at terminal node return the index else return the score
+        if(depth === 0){
+
+          //console.log(max);
           return max.index;
         }
         else{
           return max.score;
         }
       }
-      else{//checks min
+      else{
         let min = minValue(scores);
-        if(depth === 0){//if at terminal node return the index else return the score
+        if(depth === 0){
+          // console.log("min index: " + min.index);
           return min.index;
         }
         else{
           return min.score;
         }
       }
-    }
-
-
-    else if (checkBoard(player2, inBoard)) {//check if payer 2 wins
-
-      return 10;
-    }
-
-    else if (checkBoard(player1, inBoard)) {//check if player 1 wins
-
-      return -10;
-    }
-
-
-    else if (checkDraw(inBoard)) {//checks for draw
-      // console.log("draw");
-      return 0;
-    }
   }
+
+
+  }
+
+
+
+
+
+
+
 
 }
 
 
 
-function maxValue(arr){//finds the higest value in array
+function maxValue(arr){
 
   let maxObj;
 
@@ -330,7 +356,7 @@ function maxValue(arr){//finds the higest value in array
   return maxObj;
 }
 
-function minValue(arr){//finds the lowest value in arrray
+function minValue(arr){
 
   let minObj;
 
@@ -358,5 +384,5 @@ function reset(){
     $(".playerChoice").fadeIn(1000);
   });
 
-
+  cpuFirst = false;
 }
